@@ -8,5 +8,6 @@ int main(array<System::String ^> ^args)
 {
 	SceneMain();
 	SceneMonster();
+
     return 0;
 }

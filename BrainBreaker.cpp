@@ -4,6 +4,14 @@
 #include <stdlib.h>
 #include <time.h>
 
+int primeNumber[100] = { 1, 2, 3, 5, 7,
+11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
+101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,
+211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293,
+307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397,
+401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499,
+503, 509, 521, 523 }; // 100번째 소수는 541
+
 void SceneMain(void)
 {
 	// 용사 이름 입력
@@ -21,6 +29,7 @@ void SceneMain(void)
 			break;
 		}
 		printf("이름을 다시 입력하세요\n");
+		printf("용사여! 이름을 입력(5자) : ");
 	}
 }
 
@@ -28,35 +37,8 @@ void SceneMonster()
 {
 	// 몬스터 맨트 출력
 	printf("몬스터 등장 입니다.\n");
-
 	// 승부
-	Monster monster[100];
-	int inning = 0;
-	int countMonster = 0;
-	while (true)
-	{
-
-		// if() 틀렸다면
-		// {
-			monster[inning] = AddMonster(inning);
-			countMonster++;
-		// }
-		printf("%s, %d, %d, %d", 
-			monster[inning].name, 
-			monster[inning].life, 
-			monster[inning].level,
-			monster[inning].attack[0]);
-		// 입력
-		int attack = 0, chooseInn = 0;	
-		scanf_s("%d &d", &attack,sizeof(int), &chooseInn,sizeof(int));
-		// 몬스터 킬
-		if (attack == monster[chooseInn].attack[0])
-		{
-			countMonster -= KillMonster(monster[chooseInn], attack, chooseInn);
-		}
-
-		inning++;
-	}
+	Showdown();
 }
 
 Monster AddMonster(int inning)
@@ -69,6 +51,7 @@ Monster AddMonster(int inning)
 	sprintf_s(currMonster.name,sizeof(char)*20, "%d구역 몬스터", tmp);
 	currMonster.life = 100;
 	currMonster.level = (inning / 3) + 1;
+
 	// 몬스터 공격방향(배열) 생성
 	for (int i = 0; i < currMonster.level; i++)
 	{
@@ -95,14 +78,67 @@ Monster AddMonster(int inning)
 	return currMonster;
 }
 
-int KillMonster(Monster monster, int userAttack, int chooseInn)
+int KillMonster(Monster monster, int userAttack, int nSelectedMon)
 {
+	// attack 판별 루프
 	for (int i = 0; i < monster.level; i++)
-	{
-		if (monster.attack[i] == userAttack) monster.life -= monster.level;
-	}
-
-
-	return 1;
+		if (monster.attack[i] == userAttack) 
+			monster.life -= MAX_LIFE / monster.level;
+	// 몬스터 생명 판별
+	if (monster.life == 0)
+		return TRUE;
+	else
+		return FALSE;
 }
 
+void Showdown(void)
+{
+	Monster monster[100] = {0,};
+	int inning = 0;
+	int countMonster = 1;
+	int nExistMonster = 1; // primeNumber의 곱
+
+	monster[countMonster] = AddMonster(inning); // 처음 한번은 무조건 몬스터 출몰
+	while (true)
+	{
+		inning++;
+		char *chExistMonster = NULL;
+		chExistMonster = (char*)calloc(100, sizeof(char));
+		int tmp = 6;  // tmp = nExistMonster
+		for (int i = 0; i < 100; i++)
+		{
+			sprintf(chExistMonster, "%s %d", chExistMonster, primeNumber[i]);
+			if ((tmp / primeNumber[i]) == 1)
+				break;
+			else
+				tmp /= primeNumber[i];
+			
+		}
+		
+		// Attack 입력
+		printf("방향(위 72 / 아래 80 / 왼쪽 75 / 오른쪽 77)과 몬스터 선택(%s)",chExistMonster);
+		int attack = 0, nSelectedMon = 0;
+		scanf_s("%d &d", &attack, sizeof(int), &nSelectedMon, sizeof(int));
+		free(chExistMonster); // 몬스터 존재 상황 출력 변수 해제
+
+
+		// 몬스터 킬 판정
+		if (KillMonster(monster[nSelectedMon], attack, nSelectedMon))
+		{
+			printf("몬스터가 죽었습니다.\n");
+			countMonster--;
+		}
+		else
+		{
+			printf("몬스터가 공격을 성공해 동료를 불렀습니다.\n");
+			countMonster++;
+			monster[countMonster] = AddMonster(inning); // inning을 입력받아 level 결정
+		}
+		
+		if (countMonster == 0)
+		{
+			printf("스테이지 클리어!\n");
+			break;
+		}
+	}
+}

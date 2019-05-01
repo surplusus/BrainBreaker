@@ -142,7 +142,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="BrainBreakerMain.cpp" />
+    <ClCompile Include="BrainBreakerMain.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="BrainBreaker.cpp" />
   </ItemGroup>
   <ItemGroup>
