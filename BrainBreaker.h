@@ -27,9 +27,8 @@ typedef struct _MonsterCharacter
 	int life;
 	int level;
 	Arrow attack[8];
+	int death;
 } Monster;
-
-
 
 // Scene 출력
 void SceneMain(void);
@@ -37,7 +36,8 @@ void SceneMonster(void);
 
 // 승부관련 함수
 Monster AddMonster(int inning);
-int KillMonster(Monster monster, int userAttack, int chooseInn);
+Monster KillMonster(Monster monster, int userAttack, int nSelectedMon);
 void Showdown(void);
+void ExistMonPrint(int nExistMonster, int inning);
 
 #endif // !__BRAIN_BREAKER_H__
