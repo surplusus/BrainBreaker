@@ -46,7 +46,7 @@ void SceneMonster(void);
 
 // 승부관련 함수
 Monster AddMonster(int countMonster);
-Monster KillMonster(Monster monster, int userAttack, int nSelectedMon);
+Monster KillMonster(Monster monster, int userAttack, int *countMonster);
 void Showdown(void);
 
 #endif // !__BRAIN_BREAKER_H__
