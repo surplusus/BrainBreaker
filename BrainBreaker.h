@@ -5,6 +5,16 @@
 #define TRUE 1
 #define FALSE 0
 
+#    define __SLASH(x) /##x
+#    define __DOUBLE_SLASH __SLASH(/)
+#ifdef _DEBUG
+#    define _D
+#    define _R __DOUBLE_SLASH
+#else
+#    define _D __DOUBLE_SLASH
+#    define _R
+#endif
+
 // ¹æÇâÅ°
 typedef int Arrow;
 #define ARROW_UP 72
@@ -27,7 +37,7 @@ typedef struct _MonsterCharacter
 	int life;
 	int level;
 	Arrow attack[8];
-	int death;
+	int death;  // 1:»î 0:Á×À½
 } Monster;
 
 // Scene Ãâ·Â
@@ -35,9 +45,8 @@ void SceneMain(void);
 void SceneMonster(void);
 
 // ½ÂºÎ°ü·Ã ÇÔ¼ö
-Monster AddMonster(int inning);
+Monster AddMonster(int countMonster);
 Monster KillMonster(Monster monster, int userAttack, int nSelectedMon);
 void Showdown(void);
-void ExistMonPrint(int nExistMonster, int inning);
 
 #endif // !__BRAIN_BREAKER_H__
