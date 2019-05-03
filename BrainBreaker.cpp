@@ -1,24 +1,26 @@
+#include "stdafx.h"
+
 #include "BrainBreaker.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
+
 
 void SceneMain(void)
 {
+	// MainTitle 출력
+	MainTitle();
+
 	// 용사 이름 입력
 	char inputName[300] = { 0 };
-	User user = {0,100,0,0,0};
+	User user = { 0,100,0,0,0 };
 	printf("매인화면 입니다.\n");
 	printf("용사여! 이름을 입력(5자) : ");
 	while (true)
 	{
 
 
-_R		scanf_s("%300s", inputName, sizeof(char) * 300);
-_D		inputName[0] = { '1' };
-_D		inputName[0] = { '3' };
-_D		inputName[0] = { '5' };
+		_R		scanf_s("%300s", inputName, sizeof(char) * 300);
+		_D		inputName[0] = { '1' };
+		_D		inputName[0] = { '3' };
+		_D		inputName[0] = { '5' };
 
 		int tmp = strlen(inputName);
 		if (tmp < 6 && tmp != 0)

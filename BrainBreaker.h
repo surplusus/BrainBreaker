@@ -2,6 +2,11 @@
 #ifndef __BRAIN_BREAKER_H__
 #define __BRAIN_BREAKER_H__
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <Windows.h>
+#include <time.h>
+
 #define TRUE 1
 #define FALSE 0
 
@@ -21,9 +26,10 @@ typedef int Arrow;
 #define ARROW_DOWN 80
 #define ARROW_LEFT 75
 #define ARROW_RIGHT 77
-
+// monster,user LIFE
 #define MAX_LIFE 100
-
+// default text color
+#define DEFAULT_TEXTCOLOR
 typedef struct _UserCharacter
 {
 	char name[20];
@@ -43,6 +49,10 @@ typedef struct _MonsterCharacter
 // Scene 출력
 void SceneMain(void);
 void SceneMonster(void);
+void MainTitle(void);
+void TextColor(int color_number = 15);  // default color는 흰색
+void TitlePrint(void);
+void MonAttPrint(Arrow direction);
 
 // 승부관련 함수
 Monster AddMonster(int countMonster);
