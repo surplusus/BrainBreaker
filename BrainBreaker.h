@@ -46,13 +46,14 @@ typedef struct _MonsterCharacter
 	int death;  // 1:»î 0:Á×À½
 } Monster;
 
-// Scene Ãâ·Â
+// Scene Ãâ·Â °ü·Ã
 void SceneMain(void);
 void SceneMonster(void);
 void MainTitle(void);
 void TextColor(int color_number = 15);  // default color´Â Èò»ö
 void TitlePrint(void);
 void MonAttPrint(Arrow direction);
+void Gotoxy(int x, int y);
 
 // ½ÂºÎ°ü·Ã ÇÔ¼ö
 Monster AddMonster(int countMonster);
