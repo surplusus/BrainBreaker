@@ -1,45 +1,4 @@
-#include "stdafx.h"
-
 #include "BrainBreaker.h"
-
-
-void SceneMain(void)
-{
-	// MainTitle 출력
-	MainTitle();
-
-	// 용사 이름 입력
-	char inputName[300] = { 0 };
-	User user = { 0,100,0,0,0 };
-	printf("매인화면 입니다.\n");
-	printf("용사여! 이름을 입력(5자) : ");
-	while (true)
-	{
-
-
-		_R		scanf_s("%300s", inputName, sizeof(char) * 300);
-		_D		inputName[0] = { '1' };
-		_D		inputName[0] = { '3' };
-		_D		inputName[0] = { '5' };
-
-		int tmp = strlen(inputName);
-		if (tmp < 6 && tmp != 0)
-		{
-			strcpy_s(user.name, inputName);
-			break;
-		}
-		printf("이름을 다시 입력하세요\n");
-		printf("용사여! 이름을 입력(5자) : ");
-	}
-}
-
-void SceneMonster()
-{
-	// 몬스터 맨트 출력
-	printf("몬스터 등장 입니다.\n");
-	// 승부
-	Showdown();
-}
 
 Monster AddMonster(int countMonster)
 {

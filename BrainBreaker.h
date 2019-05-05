@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <Windows.h>
 #include <time.h>
+#include <conio.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -32,8 +33,8 @@ typedef int Arrow;
 #define DEFAULT_TEXTCOLOR
 typedef struct _UserCharacter
 {
-	char name[20];
-	int life = 100;
+	char name[21];
+	int life;
 	int point;
 }User;
 
@@ -46,14 +47,26 @@ typedef struct _MonsterCharacter
 	int death;  // 1:삶 0:죽음
 } Monster;
 
-// Scene 출력 관련
-void SceneMain(void);
-void SceneMonster(void);
-void MainTitle(void);
-void TextColor(int color_number = 15);  // default color는 흰색
-void TitlePrint(void);
-void MonAttPrint(Arrow direction);
+// 기본 입력, 출력
+int InputKey();
+void CursorView(char show);  //커서숨기기 0:숨기기 1:보이기
 void Gotoxy(int x, int y);
+void TextColor(int color_number = 15);  // default color는 흰색
+int ReadTxt(int startCol, int countCol, int x, int y); // 제목부분 startCol 본문 줄수 countCol
+User LoadUser(const char *_Source);
+void SaveUser(User user);
+
+// Scene 출력 관련
+User StartScene(void);
+User InitUser(void);
+void PrintTitle(void);
+void PrintArrow(Arrow direction, int x, int y);
+int PrintMenu(void);
+void SelCurser(int sel);
+
+void ShowdownScene(void);
+
+void PrintMonAtt(Arrow direction);
 
 // 승부관련 함수
 Monster AddMonster(int countMonster);

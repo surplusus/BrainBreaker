@@ -1,0 +1,9 @@
+itsmaximumofenglishsoyounustnotwriteoverthanthis
+최대쓸수있는한글을판단하기위한기준이거보다조금써
+ITSMAXIMUMOFENGLISHSOYOUNUSTNOTWRITEOVERTHANTHIS
+<StartScene 새로하기 이름입력>
+나는 우매한 우주를 구할 구원자!
+      나와 함께하겠나?
+   이름을 고하라! 지구인!
+       (최대 10글자)
+<Scene이름 입력이름 입력설명>

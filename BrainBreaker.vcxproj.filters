@@ -49,7 +49,13 @@
     <ClCompile Include="비트연산써먹기.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="MainTitle.cpp">
+    <ClCompile Include="inout.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="StartScene.cpp">
+      <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ShowdownScene.cpp">
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
   </ItemGroup>
