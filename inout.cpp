@@ -13,16 +13,16 @@ int InputKey()
 			{
 			case 72: // up
 _D				printf("up\n");
-				return true;
+				return ARROW_UP;
 			case 75: // left
 _D				printf("left\n");
-				return true;
+				return ARROW_DOWN;
 			case 77: // right
 _D				printf("right\n");
-				return true;
+				return ARROW_RIGHT;
 			case 80: // down
 _D				printf("down\n");
-				return true;
+				return ARROW_LEFT;
 			default:
 				break;
 			}

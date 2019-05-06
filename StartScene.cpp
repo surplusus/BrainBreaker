@@ -1,5 +1,5 @@
 #include "BrainBreaker.h"
-// int wait = _getch();
+
 #define INPUTBUFFER_SIZE 100
 
 void PrintProgrammer(void);

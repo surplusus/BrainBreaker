@@ -64,6 +64,9 @@ void PrintArrow(Arrow direction, int x, int y);
 int PrintMenu(void);
 void SelCurser(int sel);
 
+int PrologueScene(void);
+int MawangScene(void);
+int MonTalkScene(void);
 void ShowdownScene(void);
 
 void PrintMonAtt(Arrow direction);

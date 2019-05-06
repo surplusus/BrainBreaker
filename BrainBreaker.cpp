@@ -1,5 +1,5 @@
 #include "BrainBreaker.h"
-
+// int wait = _getch();
 Monster AddMonster(int countMonster)
 {
 	// 몬스터 초기화
@@ -41,8 +41,6 @@ Monster AddMonster(int countMonster)
 
 Monster KillMonster(Monster monster, int userAttack, int *countMonster)
 {
-
-	
 	// attack 판별 루프
 	for (int i = 0; i < monster.level; i++)
 		if (monster.attack[i] == userAttack) 

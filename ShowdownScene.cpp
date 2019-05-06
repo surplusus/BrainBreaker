@@ -1,17 +1,17 @@
 #include "BrainBreaker.h"
 
 #define INPUTBUFFER_SIZE 300
-void Input();
 void Update();
 void Render();
 void ShowdownScene()
 {
 	// 몬스터 맨트 출력
-	printf("몬스터 등장 입니다.\n");
+_D	printf("몬스터 등장 입니다.\n");
 	// 승부
+	int inputKey = 0;
 	while (true)
 	{
-		Input();
+		inputKey = InputKey();
 		Update();
 		Render();
 	}
@@ -19,12 +19,14 @@ void ShowdownScene()
 	Showdown();
 }
 
-void Input(void)
-{
-	while (InputKey())
-	{
 
-	}
+void Update(void)
+{
+
+}
+void Render(void)
+{
+
 }
 void PrintMonAtt(Arrow direction)
 {
