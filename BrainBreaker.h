@@ -48,6 +48,7 @@ typedef struct _MonsterCharacter
 } Monster;
 
 // 기본 입력, 출력
+void print_time(struct tm *now, int tail);
 int InputKey();
 void CursorView(char show);  //커서숨기기 0:숨기기 1:보이기
 void Gotoxy(int x, int y);
@@ -55,6 +56,7 @@ void TextColor(int color_number = 15);  // default color는 흰색
 int ReadTxt(int startCol, int countCol, int x, int y); // 제목부분 startCol 본문 줄수 countCol
 User LoadUser(const char *_Source);
 void SaveUser(User user);
+int InputKey_stay();
 
 // Scene 출력 관련
 User StartScene(void);
@@ -74,6 +76,7 @@ void PrintMonAtt(Arrow direction);
 // 승부관련 함수
 Monster AddMonster(int countMonster);
 Monster KillMonster(Monster monster, int userAttack, int *countMonster);
-void Showdown(void);
+int Showdown(int inputKey, int nSelMonster, Monster *monster);
+Monster CheckMonster(Monster currMonster, int *userAttack);
 
 #endif // !__BRAIN_BREAKER_H__

@@ -1,6 +1,15 @@
 #define _CTR_SECURE_NO_WARNINGS
 #include "BrainBreaker.h"
 
+void print_time(struct tm *now, int tail)
+{
+	COORD CursorPosition = { 0,1 };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), CursorPosition);
+	//현재 시각을 출력
+	printf("%2d시 %2d분 %2d초 %2d\n",
+		now->tm_hour, now->tm_min, now->tm_sec, tail);
+}
+
 int InputKey()
 {
 	int key;
@@ -33,6 +42,31 @@ _D				printf("down\n");
 		}
 	}
 }
+
+int InputKey_stay()
+{
+	int key = _getch();
+	switch (key)
+	{
+	case 72: // up
+_D		printf("up\n");
+		return ARROW_UP;
+	case 75: // left
+_D		printf("left\n");
+		return ARROW_DOWN;
+	case 77: // right
+_D		printf("right\n");
+		return ARROW_RIGHT;
+	case 80: // down
+_D		printf("down\n");
+		return ARROW_LEFT;
+	default:
+		printf("잘못눌렀습니다");
+		key = InputKey_stay();
+		return key;
+	}
+}
+
 
 void TextColor(int color_number)  // 텍스트 색 함수
 {

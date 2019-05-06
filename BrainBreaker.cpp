@@ -1,6 +1,6 @@
 #include "BrainBreaker.h"
 // int wait = _getch();
-Monster AddMonster(int countMonster)
+Monster AddMonster(int nStage)
 {
 	// 몬스터 초기화
 	Monster currMonster = { 0, }; // {이름, life, level, (Arrow)attack, death}
@@ -8,7 +8,7 @@ Monster AddMonster(int countMonster)
 	int tmp = rand() % 100;
 	sprintf_s(currMonster.name,sizeof(char)*20, "%d구역 몬스터", tmp);
 	currMonster.life = 100;
-	currMonster.level = (countMonster / 3) + 1;
+	currMonster.level = (nStage / 3) % 6 + 1;
 	currMonster.death = 1;
 	// 몬스터 공격방향(배열) 생성
 	for (int i = 0; i < currMonster.level; i++)
@@ -32,11 +32,30 @@ Monster AddMonster(int countMonster)
 			break;
 		}
 	}
-	printf("%s, %d, %d, (%d %d),%d\n",
-		currMonster.name, currMonster.life,
-		currMonster.level, currMonster.attack[0], currMonster.attack[1],
-		currMonster.death);
+
 	return currMonster;
+}
+
+Monster CheckMonster(Monster currMonster, int *userAttack)
+{
+	for (int i = 0; i < currMonster.level; i++)
+	{
+		if (currMonster.attack[i] == *(userAttack + i))
+			currMonster.life -= currMonster.life / currMonster.level;
+	}
+
+	// 몬스터 생명 판별
+	if (5 >= currMonster.life)
+	{
+_D		printf("몬스터가 죽었습니다.\n");
+		currMonster = { 0, };
+		return currMonster;
+	}
+	else
+	{
+_D		printf("몬스터가 공격을 성공해 동료를 불렀습니다.\n");
+		currMonster.life = 100;
+	}
 }
 
 Monster KillMonster(Monster monster, int userAttack, int *countMonster)
@@ -45,53 +64,40 @@ Monster KillMonster(Monster monster, int userAttack, int *countMonster)
 	for (int i = 0; i < monster.level; i++)
 		if (monster.attack[i] == userAttack) 
 			monster.life -= MAX_LIFE / monster.level;
-	// 몬스터 생명 판별
-	if (monster.life == 0)
-	{
-		printf("몬스터가 죽었습니다.\n");
-		monster = { 0, };
-		(*countMonster)--;
-	}
-	else
-	{
-		printf("몬스터가 공격을 성공해 동료를 불렀습니다.\n");
-		(*countMonster)++;
-	}
+
 
 	return monster;
 }
 
-void Showdown(void)
+int Showdown(int inputKey, int nSelMonster,	Monster *monster)
 {
-	Monster monster[100] = {0,};
+	
 
-	int inning = 0;
+	int nStage = 0;
 	int countMonster = 0;
-	long long int unsigned nExistMonster = 1;  // 몬스터 존재 상황 비트마스킹
-	monster[countMonster] = AddMonster(inning); // 처음 한번은 무조건 몬스터 출몰
-	inning = 1; countMonster = 1;
+	int nExistMonster = 1;  // 몬스터 존재 상황 비트마스킹
+	monster[0] = AddMonster(nStage); // 처음 한번은 무조건 몬스터 출몰
+	nStage = 1;
+
 	while (true)
 	{
-		// inning 만큼 반복문 돌려서 누가 죽었는지 확인 // 1:삶 0:죽음
-		for (int i = inning; i >= 0; i--)
+		// nStage 만큼 반복문 돌려서 누가 죽었는지 확인 // 1:삶 0:죽음
+		for (int i = 0; i < 5; i++)
 		{
 			if (monster[i].death)
-				nExistMonster |= 1 << i;
-		}
-		printf("방향(위 72 / 아래 80 / 왼쪽 75 / 오른쪽 77)과 몬스터 선택(", nExistMonster);
-		countMonster = 0;
-		for (int i = 0; i < inning; i++)
-		{
-			if (nExistMonster & (1 << i))
 			{
-				printf(" %d", i);
-				countMonster++;
+				nExistMonster |= 1 << i;
+				countMonster += 1;
 			}
 		}
+		printf("방향(위 72 / 아래 80 / 왼쪽 75 / 오른쪽 77)과 몬스터 선택(", nExistMonster);
+		for (int i = 0; i < 5; i++)
+			if (nExistMonster & (1 << i))
+				printf(" %d", i);
 		printf(")\n");
 
 		// attack 입력
-		int userAttack = 0, nSelectedMon = 0;
+		int userAttack = inputKey, nSelectedMon = 0;
 		scanf("%d %d", &userAttack, &nSelectedMon);
 		nSelectedMon %= 100;
 
@@ -114,15 +120,6 @@ void Showdown(void)
 		}
 	
 
-		if (countMonster == 0)
-		{
-			printf("스테이지 클리어!\n");
-			break;
-		}
-		else
-		{
-			inning++;
-		}
 	}
 }
 
