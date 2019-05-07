@@ -63,23 +63,24 @@ _D		monster[0].death, monster[0].numOfMon);
 
 			// userAttack 배열 만들기 마지막 공격 다음은 -1
 			inputKey = InputKey();
-			if (0 == userAttack[AttIdx])
-				userAttack[AttIdx] = inputKey;
-			else
+			if (InputKey != 0)
 			{
 				if (currMonster.level > AttIdx)
 				{
-					AttIdx++; 				
 					userAttack[AttIdx] = inputKey;
-				}
-				if (currMonster.level == AttIdx)
-				{
-					userAttack[AttIdx + 1] = -1;
-					break;
+					AttIdx++;
 				}
 			}
+
+			if (currMonster.level == AttIdx)
+			{
+				userAttack[AttIdx] = -1;
+				break; // 키 입력 배열이 -1 일때
+
+			}
+
 		}
-_D		Gotoxy(40, 1); printf("%d/%d/%d/%d/%d/%d", userAttack[0], userAttack[1], userAttack[2], userAttack[3], userAttack[4], userAttack[5]);
+_D		Gotoxy(40, 18); printf("%d/%d/%d/%d/%d/%d", userAttack[0], userAttack[1], userAttack[2], userAttack[3], userAttack[4], userAttack[5]);
 
 		// nSelMonster 죽었나 판별
 		monster[nSelMonster] = CheckMonster(currMonster, userAttack);
