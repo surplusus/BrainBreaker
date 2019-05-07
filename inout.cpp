@@ -157,8 +157,6 @@ User LoadUser(const char *_Source)
 
 void SaveUser(User user)
 {
-	user = { "test",0,0 };
-
 	FILE *fp;
 	if ((fp = fopen("_image/usersave.txt", "w")) != NULL)
 	{

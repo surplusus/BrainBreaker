@@ -8,14 +8,14 @@ int main(void)
 	system("mode con cols=132 lines=42 | title BrainBreaker");
 	CursorView(0);
 
-	//PrologueScene();
-		
+	PrologueScene();
+	system("cls");
 	User user;
-	//StartScene();
-	//MawangScene();
-	//MonTalkScene();
+	user = StartScene(); system("cls");
+	if (user.point == -1) return 0;
+	MonTalkScene(); system("cls");
 
-	ShowdownScene();
+	user = ShowdownScene(); system("cls");
 
     return 0;
 }

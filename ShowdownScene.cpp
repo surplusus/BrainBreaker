@@ -10,6 +10,7 @@ typedef struct _Location
 #pragma region VALUE
 LOCATION setLoc[7][5] = { 0 };
 int nFlag = 0;
+User user;
 #pragma endregion
 
 #pragma region Function
@@ -19,7 +20,7 @@ void SelRender(int nExistMonster, Monster currMonster, clock_t sclock);
 void PrintMonPic(int x, int y, int onoff);
 void PrintMonAtt(Arrow direction, Monster currMonster, int attOrder);
 #pragma endregion
-void ShowdownScene()
+User ShowdownScene()
 {
 	// 기준 위치 설정 함수
 	SetPrintLocation();
@@ -33,7 +34,7 @@ _D	printf("몬스터 등장 입니다.\n");
 	int inputKey = 0;
 	Monster monster[5];
 	int nSelMonster = 0;
-	int nStage = 1;
+	int nStage = user.point/1000+1;
 	Monster currMonster;
 	int userAttack[7] = { 0, }, AttIdx = 0;
 	int nExistMonster = 1;  // 몬스터 존재 상황 비트마스킹
@@ -51,6 +52,7 @@ _D		monster[0].death, monster[0].numOfMon);
 
 		nSelMonster = SelMonster(nExistMonster);
 		currMonster = monster[nSelMonster];
+		memset(userAttack, 0, sizeof(int) * 7);
 		while (true)
 		{
 			// 모든 몬스터 화살표 한번에 그리기
@@ -63,7 +65,7 @@ _D		monster[0].death, monster[0].numOfMon);
 
 			// userAttack 배열 만들기 마지막 공격 다음은 -1
 			inputKey = InputKey();
-			if (InputKey != 0)
+			if (inputKey != 0)
 			{
 				if (currMonster.level > AttIdx)
 				{
@@ -100,11 +102,26 @@ _D		Gotoxy(40, 18); printf("%d/%d/%d/%d/%d/%d", userAttack[0], userAttack[1], us
 		// 시간이 지날수록 스테이지 난이도 증가 nStage
 		if (nExistMonster == 0)
 		{
-			printf("스테이지 클리어!\n");
+			Gotoxy(50, 17); 	printf("Stage Clear!");
+			Gotoxy(50, 18);		printf("(자동저장되었습니다");
+			user.life = 100, user.point += nStage * 100;
+			SaveUser(user);
+			Gotoxy(50, 19); 	printf("(아무키나 누르세요)");
+			int wait = _getch();
 			break;
 		}
 		else
 		{
+			if (nExistMonster == 31)
+			{
+				Gotoxy(50, 17); printf("Game Over");
+				Gotoxy(50, 18); 	printf("(아무키나 누르세요)");
+				int wait = _getch();
+				user = LoadUser("_image/usersave.txt");
+				Gotoxy(50, 19); 	printf("%s / %d / %d", user.name, user.life, user.point);
+				user = { "Loser", 0,0 };
+				return user;
+			}
 			nStage++;
 		}
 	}

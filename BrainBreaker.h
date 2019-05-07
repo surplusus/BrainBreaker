@@ -70,7 +70,7 @@ void SelCurser(int sel);
 int PrologueScene(void);
 int MawangScene(void);
 int MonTalkScene(void);
-void ShowdownScene(void);
+User ShowdownScene(void);
 
 
 // 승부관련 함수

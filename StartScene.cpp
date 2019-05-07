@@ -23,10 +23,12 @@ _R	for (int i = 0; i < 4; i++)
 	if (0 == sel) user = InitUser(); // 새로하기
 	if (1 == sel) user = LoadUser("_image/usersave.txt");
 	if (2 == sel) PrintProgrammer(); // 크래딧
-	if (3 == sel) system("exit");  // 종료
+	if (3 == sel)  // 종료
+	{
+		user.point = -1;
+		return user;  
+	}
 
-	//test
-_D	printf("%s\n%d\n%d\n", user.name, user.life, user.point);
 	return user;
 }
 
@@ -43,19 +45,21 @@ User InitUser(void)
 	User user = { 0,100,0 };
 
 	// print
+	
 	ReadTxt(4, 4, 50, 18);
-
+	int wait = _getch();
+	wait = _getch();
 	while (true)
 	{
-_R		scanf_s("%300s", inputName, sizeof(char) * 300);
-_D		strcpy(inputName, "나!나나나!난난나나나");
+		Gotoxy(60, 25);
+		scanf_s("%300s", inputName, sizeof(char) * 300);
 		int tmp = strlen(inputName);
 		if (tmp < 21 && tmp != 0)
 		{
 			strcpy_s(user.name, inputName);
 			break;
 		}
-		printf("이름을 다시 입력하세요\n");
+		Gotoxy(50, 17); printf("이름을 다시 입력하세요\n");
 	}
 	return user;
 }

@@ -24,5 +24,7 @@ int PrologueScene(void)
 	TextColor(112);
 	ReadTxt(9, 9, 6, 5);
 	TextColor();
+	wait = _getch();
+	wait = _getch();
 	return 0;
 }

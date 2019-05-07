@@ -5,8 +5,8 @@ int MonTalkScene(void)
 	// 몬스터 그림 출력
 	FILE *fp;
 	char buf[200] = { 0, };
-	//fopen("_image/mawang.txt", "w");
-	//fclose(fp);
+	int i = 0;
+	TextColor(120);
 	if ((fp = fopen("_image/monster.txt", "r+")) != NULL)
 	{
 		fseek(fp, 0, SEEK_SET);
@@ -14,7 +14,8 @@ int MonTalkScene(void)
 		{
 			if (feof(fp)) break;
 			fscanf(fp, "%s", buf);
-			printf("%s\n", buf);
+			Gotoxy(20, 15+i);  printf("%s\n", buf);
+			i++;
 		}
 
 		fclose(fp);
@@ -26,5 +27,7 @@ int MonTalkScene(void)
 	TextColor(112);
 	ReadTxt(19, 9, 40, 15);
 	TextColor();
+	wait = _getch();
+	wait = _getch();
 	return 0;
 }
