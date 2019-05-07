@@ -45,6 +45,7 @@ typedef struct _MonsterCharacter
 	int level;
 	Arrow attack[8];
 	int death;  // 1:»î 0:Á×À½
+	int numOfMon;
 } Monster;
 
 // ±âº» ÀÔ·Â, Ãâ·Â
@@ -71,12 +72,13 @@ int MawangScene(void);
 int MonTalkScene(void);
 void ShowdownScene(void);
 
-void PrintMonAtt(Arrow direction);
 
 // ½ÂºÎ°ü·Ã ÇÔ¼ö
+void MonStatusRender(int nExistMonster);
 Monster AddMonster(int countMonster);
 Monster KillMonster(Monster monster, int userAttack, int *countMonster);
 int Showdown(int inputKey, int nSelMonster, Monster *monster);
 Monster CheckMonster(Monster currMonster, int *userAttack);
-
+void PrintMonAtt(Arrow direction, Monster currMonster, int attOrder);
+void AttRender(Monster monster, clock_t sclock);
 #endif // !__BRAIN_BREAKER_H__

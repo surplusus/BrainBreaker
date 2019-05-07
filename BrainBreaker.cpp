@@ -3,7 +3,7 @@
 Monster AddMonster(int nStage)
 {
 	// 몬스터 초기화
-	Monster currMonster = { 0, }; // {이름, life, level, (Arrow)attack, death}
+	Monster currMonster = { 0, }; // {이름, life, level, (Arrow)attack, death,numofmon}
 	srand(time(NULL));
 	int tmp = rand() % 100;
 	sprintf_s(currMonster.name,sizeof(char)*20, "%d구역 몬스터", tmp);
@@ -43,18 +43,26 @@ Monster CheckMonster(Monster currMonster, int *userAttack)
 		if (currMonster.attack[i] == *(userAttack + i))
 			currMonster.life -= currMonster.life / currMonster.level;
 	}
-
 	// 몬스터 생명 판별
 	if (5 >= currMonster.life)
 	{
-_D		printf("몬스터가 죽었습니다.\n");
+		Gotoxy(50, 17);
+		printf("몬스터가 죽었습니다.");
+		Sleep(600);
+		Gotoxy(50, 17);
+		printf("                                         ");
 		currMonster = { 0, };
 		return currMonster;
 	}
 	else
 	{
-_D		printf("몬스터가 공격을 성공해 동료를 불렀습니다.\n");
+		Gotoxy(50, 17);
+		printf("몬스터가 공격을 성공해 동료를 불렀습니다.");
+		Sleep(600);
+		Gotoxy(50, 17);
+		printf("                                         ");
 		currMonster.life = 100;
+		return currMonster;
 	}
 }
 

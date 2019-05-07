@@ -2,22 +2,34 @@
 
 #define INPUTBUFFER_SIZE 300
 
+typedef struct _Location
+{
+	int x;
+	int y;
+}LOCATION;
+#pragma region VALUE
+LOCATION setLoc[7][5] = { 0 };
+int nFlag = 0;
+#pragma endregion
+
+#pragma region Function
+void SetPrintLocation();
 int SelMonster(int nExistMonster);
-void Render(int nExistMonster, Monster currMonster, clock_t sclock);
-void PrintMonAtt(Arrow direction);
+void SelRender(int nExistMonster, Monster currMonster, clock_t sclock);
+void PrintMonPic(int x, int y, int onoff);
+void PrintMonAtt(Arrow direction, Monster currMonster, int attOrder);
+#pragma endregion
 void ShowdownScene()
 {
-	// 기준시간 관련
-	clock_t sclock;//sclock:시작, nclock:현재(1/1000초 시간)
-	time_t seconds; //초단위 시각
-	struct tm *now; //date time 시각   
-	sclock = clock();//시작 clock을 구합니다.
-	time(&seconds);//초단위 시각을 구합니다.
-	now = localtime(&seconds);//date time 시각을 구합니다.
+	// 기준 위치 설정 함수
+	SetPrintLocation();
+	// 기준시간 관련 (프로세스 구동 시간)
+	clock_t sclock = clock();//sclock:기준시작, nclock:현재(1/1000초 시간)
 
 	// 몬스터 맨트 출력
 _D	printf("몬스터 등장 입니다.\n");
 	// 승부
+#pragma region VAL
 	int inputKey = 0;
 	Monster monster[5];
 	int nSelMonster = 0;
@@ -25,21 +37,32 @@ _D	printf("몬스터 등장 입니다.\n");
 	Monster currMonster;
 	int userAttack[7] = { 0, }, AttIdx = 0;
 	int nExistMonster = 1;  // 몬스터 존재 상황 비트마스킹
+#pragma endregion
 	monster[0] = AddMonster(nStage); // 처음 한번은 무조건 몬스터 출몰
-_D	printf("%s, %d, %d, (%d %d),%d\n",
+_D	printf("%s, %d, %d, (%d %d),%d,%d번째\n",
 _D		monster[0].name, monster[0].life,
 _D		monster[0].level, monster[0].attack[0], monster[0].attack[1],
-_D		monster[0].death);
+_D		monster[0].death, monster[0].numOfMon);
 
-	while (true)
+  	while (true)
 	{
+		// 존재하는 몬스터 보이기
+		MonStatusRender(nExistMonster);
+
 		nSelMonster = SelMonster(nExistMonster);
 		currMonster = monster[nSelMonster];
 		while (true)
 		{
-			Render(nExistMonster, currMonster,sclock);
-			inputKey = InputKey();
+			// 모든 몬스터 화살표 한번에 그리기
+			for (int i = 0; i < 5; i++)
+				if (nExistMonster & (1 << i))
+					AttRender(monster[i], sclock);
+
+			//선택된 몬스터 그림이 깜빡임(userAttack과 무관한 깜빡임)
+			SelRender(nExistMonster, currMonster, sclock);
+
 			// userAttack 배열 만들기 마지막 공격 다음은 -1
+			inputKey = InputKey();
 			if (0 == userAttack[AttIdx])
 				userAttack[AttIdx] = inputKey;
 			else
@@ -56,22 +79,89 @@ _D		monster[0].death);
 				}
 			}
 		}
+_D		Gotoxy(40, 1); printf("%d/%d/%d/%d/%d/%d", userAttack[0], userAttack[1], userAttack[2], userAttack[3], userAttack[4], userAttack[5]);
+
 		// nSelMonster 죽었나 판별
 		monster[nSelMonster] = CheckMonster(currMonster, userAttack);
-		if (0 == monster[nSelMonster].death) nExistMonster &= ~(1 << nSelMonster);
+		if (0 == monster[nSelMonster].death) 
+			nExistMonster &= ~(1 << nSelMonster);
+		else
+		{
+			for (int j = 0; j < 5; j++)
+				if (!(nExistMonster & (1 << j)))
+				{
+					nExistMonster += (1 << j);
+					monster[j] = AddMonster(nStage);
+					break;
+				}
+		}
 
-		
-		//Gotoxy(5, 10); printf("%d", nSelMonster);
-		//Gotoxy(5, 20);
-		
-		
-
-
-
+		// 시간이 지날수록 스테이지 난이도 증가 nStage
 		if (nExistMonster == 0)
 		{
 			printf("스테이지 클리어!\n");
 			break;
+		}
+		else
+		{
+			nStage++;
+		}
+	}
+}
+
+void MonStatusRender(int nExistMonster)
+{
+	int x = 0, y = 0;
+	TextColor();
+	// 존재하는 몬스터 보이기
+	for (int i = 0; i < 5; i++)
+	{
+		x = setLoc[6][i].x; y = setLoc[6][i].y;
+		if ((1 << i) & nExistMonster)
+		{
+			PrintMonPic(x, y, 1);
+		}
+		else
+		{
+			PrintMonPic(x, y, -1);
+		}
+	}
+	TextColor();
+}
+
+void AttRender(Monster monster, clock_t sclock)
+{	
+	// 죽어있으면 render 안함 // 1:삶 0:죽음 
+	if (!(monster.death)) return;
+	// 초마다 실행위한 선언
+	clock_t nclock = clock();//sclock:시작, nclock:현재
+	int timer = (nclock - sclock) % 1000; // (1/1000초 시간)
+	int x = 0; int y = 0;
+	// 몬스터 어택 그림
+	int ranAtt = 0;
+	while (true)  // ranAtt = 어택숫자보다 작거나 같은 attack index
+	{
+		ranAtt = rand() % 7;
+		if (monster.attack[ranAtt]) break;
+	}
+	if (!timer)  //timer % 1000 = 1초 
+	{
+		if (nFlag == 0)
+		{
+			nFlag = !nFlag;
+			// 몬스터 어택 그림
+			TextColor(3);
+			for (int i = 0; i < 5; i++)
+				PrintMonAtt(monster.attack[i], monster, ranAtt);
+			TextColor();
+		}
+		else
+		{
+			nFlag = !nFlag;
+			// 몬스터 어택 지움
+			TextColor(3);
+			PrintMonAtt(111, monster, ranAtt);
+			TextColor();
 		}
 	}
 }
@@ -79,47 +169,45 @@ _D		monster[0].death);
 int SelMonster(int nExistMonster)
 {
 	int sel = 0;
-	for (int i = 0; i < 5; i++)
-		if (nExistMonster & (1 << i))
-			printf("%d", nExistMonster);
+
 	while (true)
 	{
 		switch (sel)
 		{
 		case 0:
-			Gotoxy(0, 4); printf("●");
-			Gotoxy(0, 12); printf("  ");
-			Gotoxy(0, 20); printf("  ");
-			Gotoxy(0, 28); printf("  ");
-			Gotoxy(0, 36); printf("  ");
+			Gotoxy(127, 5); printf("●");
+			Gotoxy(127, 13); printf("  ");
+			Gotoxy(127, 21); printf("  ");
+			Gotoxy(127, 29); printf("  ");
+			Gotoxy(127, 37); printf("  ");
 			break;
 		case 1:
-			Gotoxy(0, 4); printf("  ");
-			Gotoxy(0, 12); printf("●");
-			Gotoxy(0, 20); printf("  ");
-			Gotoxy(0, 28); printf("  ");
-			Gotoxy(0, 36); printf("  ");
+			Gotoxy(127, 5); printf("  ");
+			Gotoxy(127, 13); printf("●");
+			Gotoxy(127, 21); printf("  ");
+			Gotoxy(127, 29); printf("  ");
+			Gotoxy(127, 37); printf("  ");
 			break;
 		case 2:
-			Gotoxy(0, 4); printf("  ");
-			Gotoxy(0, 12); printf("  ");
-			Gotoxy(0, 20); printf("●");
-			Gotoxy(0, 28); printf("  ");
-			Gotoxy(0, 36); printf("  ");
+			Gotoxy(127, 5); printf("  ");
+			Gotoxy(127, 13); printf("  ");
+			Gotoxy(127, 21); printf("●");
+			Gotoxy(127, 29); printf("  ");
+			Gotoxy(127, 37); printf("  ");
 			break;
 		case 3:
-			Gotoxy(0, 4); printf("  ");
-			Gotoxy(0, 12); printf("  ");
-			Gotoxy(0, 20); printf("  ");
-			Gotoxy(0, 28); printf("●");
-			Gotoxy(0, 36); printf("  ");
+			Gotoxy(127, 5); printf("  ");
+			Gotoxy(127, 13); printf("  ");
+			Gotoxy(127, 21); printf("  ");
+			Gotoxy(127, 29); printf("●");
+			Gotoxy(127, 37); printf("  ");
 			break;
 		case 4:
-			Gotoxy(0, 4); printf("  ");
-			Gotoxy(0, 12); printf("  ");
-			Gotoxy(0, 20); printf("  ");
-			Gotoxy(0, 28); printf("  ");
-			Gotoxy(0, 36); printf("●");
+			Gotoxy(127, 5); printf("  ");
+			Gotoxy(127, 13); printf("  ");
+			Gotoxy(127, 21); printf("  ");
+			Gotoxy(127, 29); printf("  ");
+			Gotoxy(127, 37); printf("●");
 			break;
 		default:
 			break;
@@ -128,15 +216,25 @@ int SelMonster(int nExistMonster)
 
 		switch (key)
 		{
-		case 72: // up
+		case ARROW_UP: // up
 			sel -= 1;
 			break;
-		case 80: // down
+		case ARROW_DOWN: // down
 			sel += 1;
 			break;
 		case 13:
-			// 몬스터 캐릭을 움직이고 소리가 나게한다
-			return sel;
+			if (nExistMonster & (1 << (sel)))
+			{
+				return sel;
+			}
+			{
+				Gotoxy(50, 17);
+				printf("몬스터를 잘 못 선택하셨습니다");
+				Sleep(400);
+				Gotoxy(50, 17);
+				printf("                              ");
+				break;
+			}
 		default:
 			break;
 		}
@@ -145,45 +243,94 @@ int SelMonster(int nExistMonster)
 	}
 }
 
-void Render(int nExistMonster, Monster currMonster, clock_t sclock)
+void SetPrintLocation()
+{
+	int relY = 2, relX = 1; // 기준 시작지점
+	for (int i = 0; i < 7; i++)
+	{
+		for (int j = 0; j < 5; j++)
+		{
+			setLoc[i][j] = { relY + 18 * i, relX + 8 * j };
+		}
+	}
+}
+
+void SelRender(int nExistMonster, Monster currMonster, clock_t sclock)
 {
 	// 초마다 실행
-	clock_t nclock;//sclock:시작, nclock:현재(1/1000초 시간)
-	time_t seconds; //초단위 시각
-	struct tm *now; //date time 시각   
-	int tail = 0;
+	clock_t nclock = clock();//sclock:기준시각, nclock:현재(1/1000초)
+	int timer = (nclock - sclock) % 1000;
+	int x = 0; int y = 0;
 	nclock = clock();
-	if (nclock - sclock >= (CLOCKS_PER_SEC / 100))//clock/100초와 크거나 같으면
+	
+	// 깜빡이는 몬스터그림
+	if (timer==0 || timer == 300 || timer == 400)  // timer 값이 0일때 한번
 	{
-		sclock = clock();
-		time(&seconds);//초단위 시각을 구합니다.
-		now = localtime(&seconds);//date time 시각을 구합니다.
-		if (now->tm_sec % 3 == 0)
+		if (0 == nFlag)
 		{
-			Gotoxy(12, 1);
-			printf("as");   // 몬스터 그림
+			nFlag = 1;
+			// 몬스터 그림
+			TextColor(12);
+			for (int i = 0; i < 5; i++)
+				if (nExistMonster & (1 << i))
+				{
+					x = setLoc[6][i].x; y = setLoc[6][i].y; PrintMonPic(x, y, 1);
+				}
+			TextColor();
 		}
 		else
 		{
-			Gotoxy(12, 1);
-			printf("  ");   // 몬스터 그림 지움
+			nFlag = 0;
+			// 몬스터 그림 지움
+			TextColor(12);
+			for (int i = 0; i < 5; i++)
+				if (nExistMonster & (1 << i))
+				{
+					x = setLoc[6][i].x; y = setLoc[6][i].y; PrintMonPic(x, y, 0);
+				}
+			TextColor();
 		}
 	}
-
-	//몬스터 플래그 출력
-	for (int i = 0; i < 5; i++)
-		if (nExistMonster & (1 << i))
-			printf("%d", nExistMonster);
 }
 
-void PrintMonAtt(Arrow direction)
+void PrintMonPic(int x, int y,int onoff) // onoff 1 : 그림 0 : 흰그림 -1 : 공백
+{
+	FILE *fp;
+	char buffer[20];
+	if (1 == onoff)
+	{
+		if ((fp = fopen("_image/monster.txt", "r+")) != NULL) {
+			memset(buffer, 0, sizeof(buffer));
+			while (fgets(buffer, INPUTBUFFER_SIZE, fp) != NULL)
+			{
+				Gotoxy(x, ++y);
+				printf("%s", buffer);
+			}
+			fclose(fp);
+		}
+	}
+	if (0 == onoff)
+	{
+		for (int i = 0; i < 7; i++)
+		{
+			Gotoxy(x, ++y);
+			printf("□□□□□□□□");
+		}
+	}
+	if (-1 == onoff)
+		for (int i = 0; i < 7; i++)
+		{
+			Gotoxy(x, ++y);
+			printf("                ");
+		}
+}
+
+void PrintMonAtt(Arrow direction, Monster currMonster, int attOrder)
 {
 	TextColor(12);
-
 	FILE *fp;
 	char buffer[INPUTBUFFER_SIZE + 1];
 	char fLocation[30];
-
 	switch (direction)
 	{
 	case ARROW_UP:
@@ -198,21 +345,25 @@ void PrintMonAtt(Arrow direction)
 	case ARROW_RIGHT:
 		strcpy(fLocation, "_image/arrow_right.txt");
 		break;
+	case 111: // 화살표 지우기 입력
+		strcpy(fLocation, "_image/arrow_blank.txt");
 	default:
 		break;
 	}
 	// 출력 커서 위치 지정
-	int x = 60, y = 16;
-
+	int numMon = currMonster.numOfMon;
+	int wCount = 0;
+	//if (currMonster.attack[i] != 0)
+		
 	if ((fp = fopen(fLocation, "r+")) != NULL) {
 		memset(buffer, 0, sizeof(buffer));
 		while (fgets(buffer, INPUTBUFFER_SIZE, fp) != NULL)
 		{
-			Gotoxy(x, ++y);
+			Gotoxy(setLoc[numMon][attOrder].x, setLoc[numMon][attOrder].y+wCount);
 			printf("%s", buffer);
+			wCount++;
 		}
 		fclose(fp);
 	}
-
 	TextColor(); //default color
 }
