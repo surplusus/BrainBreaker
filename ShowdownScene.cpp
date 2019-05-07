@@ -2,6 +2,8 @@
 
 #define INPUTBUFFER_SIZE 300
 
+using namespace std;
+
 typedef struct _Location
 {
 	int x;
@@ -36,10 +38,10 @@ _D	printf("몬스터 등장 입니다.\n");
 	int nSelMonster = 0;
 	int nStage = user.point/1000+1;
 	Monster currMonster;
-	int userAttack[7] = { 0, }, AttIdx = 0;
+	int userAttack[7] = { 0, }, attIdx = 0;
 	int nExistMonster = 1;  // 몬스터 존재 상황 비트마스킹
 #pragma endregion
-	monster[0] = AddMonster(nStage); // 처음 한번은 무조건 몬스터 출몰
+	monster[0] = AddMonster(nStage); monster[0].numOfMon = 0; // 처음 한번은 무조건 몬스터 출몰
 _D	printf("%s, %d, %d, (%d %d),%d,%d번째\n",
 _D		monster[0].name, monster[0].life,
 _D		monster[0].level, monster[0].attack[0], monster[0].attack[1],
@@ -53,6 +55,7 @@ _D		monster[0].death, monster[0].numOfMon);
 		nSelMonster = SelMonster(nExistMonster);
 		currMonster = monster[nSelMonster];
 		memset(userAttack, 0, sizeof(int) * 7);
+		attIdx = 0;
 		while (true)
 		{
 			// 모든 몬스터 화살표 한번에 그리기
@@ -67,16 +70,16 @@ _D		monster[0].death, monster[0].numOfMon);
 			inputKey = InputKey();
 			if (inputKey != 0)
 			{
-				if (currMonster.level > AttIdx)
+				if (currMonster.level > attIdx)
 				{
-					userAttack[AttIdx] = inputKey;
-					AttIdx++;
+					userAttack[attIdx] = inputKey;
+					attIdx++;
 				}
 			}
 
-			if (currMonster.level == AttIdx)
+			if (currMonster.level == attIdx)
 			{
-				userAttack[AttIdx] = -1;
+				userAttack[attIdx] = -1;
 				break; // 키 입력 배열이 -1 일때
 
 			}
@@ -95,6 +98,7 @@ _D		Gotoxy(40, 18); printf("%d/%d/%d/%d/%d/%d", userAttack[0], userAttack[1], us
 				{
 					nExistMonster += (1 << j);
 					monster[j] = AddMonster(nStage);
+					monster[j].numOfMon = j;
 					break;
 				}
 		}
@@ -280,7 +284,7 @@ void SelRender(int nExistMonster, Monster currMonster, clock_t sclock)
 	int timer = (nclock - sclock) % 1000;
 	int x = 0; int y = 0;
 	nclock = clock();
-	
+	int selX = currMonster.numOfMon;
 	// 깜빡이는 몬스터그림
 	if (timer==0 || timer == 300 || timer == 400)  // timer 값이 0일때 한번
 	{
@@ -289,12 +293,7 @@ void SelRender(int nExistMonster, Monster currMonster, clock_t sclock)
 			nFlag = 1;
 			// 몬스터 그림
 			TextColor(12);
-			for (int i = 0; i < 5; i++)
-				if (nExistMonster & (1 << i))
-				{
-					x = setLoc[6][i].x; y = setLoc[6][i].y; PrintMonPic(x, y, 1);
-				}
-			TextColor();
+			x = setLoc[6][selX].x; y = setLoc[6][selX].y; PrintMonPic(x, y, 1);
 		}
 		else
 		{
@@ -306,9 +305,9 @@ void SelRender(int nExistMonster, Monster currMonster, clock_t sclock)
 				{
 					x = setLoc[6][i].x; y = setLoc[6][i].y; PrintMonPic(x, y, 0);
 				}
-			TextColor();
 		}
 	}
+	TextColor();
 }
 
 void PrintMonPic(int x, int y,int onoff) // onoff 1 : 그림 0 : 흰그림 -1 : 공백

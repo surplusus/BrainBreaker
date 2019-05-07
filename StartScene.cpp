@@ -206,9 +206,7 @@ void PrintProgrammer(void)
 	TextColor(7);	Gotoxy(58, 21);	printf("             ");
 	TextColor(112);	Gotoxy(60, 22);	printf("½º Åä ¸®");
 	TextColor(7);	Gotoxy(60, 23);	printf("À± ±¸ Çö");
-	TextColor(7);	Gotoxy(60, 24);	printf("        ");
-	TextColor(112);	Gotoxy(60, 25);	printf("À½    ¾Ç");
-	TextColor(7);	Gotoxy(60, 26);	printf("À± ±¸ Çö");
+
 
 	// wipe out
 	int anykey = _getch();
