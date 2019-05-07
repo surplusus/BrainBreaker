@@ -170,6 +170,19 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="_image\arrow_blank.txt" />
+    <Text Include="_image\arrow_down.txt" />
+    <Text Include="_image\arrow_left.txt" />
+    <Text Include="_image\arrow_right.txt" />
+    <Text Include="_image\arrow_up.txt" />
+    <Text Include="_image\maintitle.txt" />
+    <Text Include="_image\mawang1.txt" />
+    <Text Include="_image\mawang2.txt" />
+    <Text Include="_image\monster.txt" />
+    <Text Include="_image\script.txt" />
+    <Text Include="_image\usersave.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

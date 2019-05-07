@@ -73,4 +73,39 @@
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="_image\arrow_blank.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="_image\arrow_down.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="_image\arrow_left.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="_image\arrow_right.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="_image\arrow_up.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="_image\maintitle.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="_image\mawang1.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="_image\mawang2.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="_image\monster.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="_image\script.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="_image\usersave.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+  </ItemGroup>
 </Project>
