@@ -34,19 +34,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AssemblyInfo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="BrainBreakerMain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="BrainBreaker.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="keymoveexample.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="비트연산써먹기.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="inout.cpp">

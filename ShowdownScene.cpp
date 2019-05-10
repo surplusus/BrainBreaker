@@ -12,6 +12,7 @@ typedef struct _Location
 #pragma region VALUE
 LOCATION setLoc[7][5] = { 0 };
 int nFlag = 0;
+int attFlag = 0;
 User user;
 #pragma endregion
 
@@ -30,11 +31,13 @@ User ShowdownScene()
 	clock_t sclock = clock();//sclock:기준시작, nclock:현재(1/1000초 시간)
 
 	// 몬스터 맨트 출력
-_D	printf("몬스터 등장 입니다.\n");
+_D	//printf("몬스터 등장 입니다.\n");
 	// 승부
 #pragma region VAL
 	int inputKey = 0;
 	Monster monster[5];
+	for (int i = 0; i < 5; i++)
+		monster[i].numOfMon = i;
 	int nSelMonster = 0;
 	int nStage = user.point/1000+1;
 	Monster currMonster;
@@ -42,14 +45,12 @@ _D	printf("몬스터 등장 입니다.\n");
 	int nExistMonster = 1;  // 몬스터 존재 상황 비트마스킹
 #pragma endregion
 	monster[0] = AddMonster(nStage); monster[0].numOfMon = 0; // 처음 한번은 무조건 몬스터 출몰
-_D	printf("%s, %d, %d, (%d %d),%d,%d번째\n",
-_D		monster[0].name, monster[0].life,
-_D		monster[0].level, monster[0].attack[0], monster[0].attack[1],
-_D		monster[0].death, monster[0].numOfMon);
+
 
   	while (true)
 	{
 		// 존재하는 몬스터 보이기
+		TextColor();
 		MonStatusRender(nExistMonster);
 
 		nSelMonster = SelMonster(nExistMonster);
@@ -85,7 +86,9 @@ _D		monster[0].death, monster[0].numOfMon);
 			}
 
 		}
-_D		Gotoxy(40, 18); printf("%d/%d/%d/%d/%d/%d", userAttack[0], userAttack[1], userAttack[2], userAttack[3], userAttack[4], userAttack[5]);
+_D		//Gotoxy(40, 18); printf("%d/%d/%d/%d/%d/%d", userAttack[0], userAttack[1], userAttack[2], userAttack[3], userAttack[4], userAttack[5]);
+_D		//Gotoxy(0, 0); printf("%s/%d/%d/%d/%d/%d/%d", currMonster.name,currMonster.life, currMonster.level,currMonster.attack[0],currMonster.attack[1],currMonster.death ,currMonster.numOfMon);
+
 
 		// nSelMonster 죽었나 판별
 		monster[nSelMonster] = CheckMonster(currMonster, userAttack);
@@ -111,7 +114,8 @@ _D		Gotoxy(40, 18); printf("%d/%d/%d/%d/%d/%d", userAttack[0], userAttack[1], us
 			user.life = 100, user.point += nStage * 100;
 			SaveUser(user);
 			Gotoxy(50, 19); 	printf("(아무키나 누르세요)");
-			int wait = _getch();
+			char wait = _getch();
+			Gotoxy(0, 100); putchar(wait); putchar(wait);
 			break;
 		}
 		else
@@ -159,8 +163,14 @@ void AttRender(Monster monster, clock_t sclock)
 	clock_t nclock = clock();//sclock:시작, nclock:현재
 	int timer = (nclock - sclock) % 1000; // (1/1000초 시간)
 	int x = 0; int y = 0;
+
 	// 몬스터 어택 그림
-	int ranAtt = 0;
+	int maskAtt = 0;
+	for (int i = 0; i < 7; i++)
+	{
+		if (monster.attack[i]) maskAtt = (1 << i); // 어택 마스킹
+	}
+	int ranAtt = 0; 
 	while (true)  // ranAtt = 어택숫자보다 작거나 같은 attack index
 	{
 		ranAtt = rand() % 7;
@@ -168,20 +178,21 @@ void AttRender(Monster monster, clock_t sclock)
 	}
 	if (!timer)  //timer % 1000 = 1초 
 	{
-		if (nFlag == 0)
+		if (attFlag == 0)
 		{
-			nFlag = !nFlag;
+			attFlag++; attFlag %= 3;
+			
 			// 몬스터 어택 그림
-			TextColor(3);
+			TextColor(11);
 			for (int i = 0; i < 5; i++)
 				PrintMonAtt(monster.attack[i], monster, ranAtt);
 			TextColor();
 		}
 		else
 		{
-			nFlag = !nFlag;
+			attFlag++; attFlag %= 3;
 			// 몬스터 어택 지움
-			TextColor(3);
+			TextColor(11);
 			PrintMonAtt(111, monster, ranAtt);
 			TextColor();
 		}
@@ -239,9 +250,11 @@ int SelMonster(int nExistMonster)
 		switch (key)
 		{
 		case ARROW_UP: // up
+			PlaySound(TEXT("./_sound/cursormove.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			sel -= 1;
 			break;
 		case ARROW_DOWN: // down
+			PlaySound(TEXT("./_sound/cursormove.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			sel += 1;
 			break;
 		case 13:
@@ -292,8 +305,10 @@ void SelRender(int nExistMonster, Monster currMonster, clock_t sclock)
 		{
 			nFlag = 1;
 			// 몬스터 그림
+			PlaySound(TEXT("./_sound/monmove.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			TextColor(12);
 			x = setLoc[6][selX].x; y = setLoc[6][selX].y; PrintMonPic(x, y, 1);
+			TextColor();
 		}
 		else
 		{
@@ -305,9 +320,9 @@ void SelRender(int nExistMonster, Monster currMonster, clock_t sclock)
 				{
 					x = setLoc[6][i].x; y = setLoc[6][i].y; PrintMonPic(x, y, 0);
 				}
+			TextColor();
 		}
 	}
-	TextColor();
 }
 
 void PrintMonPic(int x, int y,int onoff) // onoff 1 : 그림 0 : 흰그림 -1 : 공백
@@ -376,7 +391,7 @@ void PrintMonAtt(Arrow direction, Monster currMonster, int attOrder)
 		memset(buffer, 0, sizeof(buffer));
 		while (fgets(buffer, INPUTBUFFER_SIZE, fp) != NULL)
 		{
-			Gotoxy(setLoc[numMon][attOrder].x, setLoc[numMon][attOrder].y+wCount);
+			Gotoxy(setLoc[attOrder][numMon].x, setLoc[attOrder][numMon].y+wCount);
 			printf("%s", buffer);
 			wCount++;
 		}

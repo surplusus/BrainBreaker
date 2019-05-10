@@ -6,14 +6,16 @@ void PrintProgrammer(void);
 
 User StartScene(void)
 {
+
 	// MainTitle Ãâ·Â
-_R	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		PrintTitle();
-		PrintArrow(ARROW_LEFT, 20, 16);
-		PrintArrow(ARROW_RIGHT, 132 - 20 - 16, 16);
+		Sleep(400);
 	}
-		
+
+	PrintArrow(ARROW_LEFT, 20, 16);
+	PrintArrow(ARROW_RIGHT, 96, 16);
 	// default color
 	TextColor();  
 	// menu
@@ -73,15 +75,17 @@ void PrintTitle(void)
 
 	FILE *fp;
 	char buffer[INPUTBUFFER_SIZE + 1];
-
+	int i = 0;
 	if ((fp = fopen("_image/maintitle.txt", "r+")) != NULL) {
 		memset(buffer, 0, sizeof(buffer));
 		while (fgets(buffer, INPUTBUFFER_SIZE, fp) != NULL)
+		{
 			printf("%s", buffer);
+		}
 		fclose(fp);
 	}
 	printf("\n\n\n\n");
-	Sleep(400);
+	
 }
 
 void PrintArrow(Arrow direction, int x, int y)

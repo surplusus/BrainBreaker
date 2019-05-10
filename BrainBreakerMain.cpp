@@ -6,15 +6,16 @@ int main(void)
 {
 	system("mode con cols=132 lines=42 | title BrainBreaker");
 	CursorView(0);
-	//PrologueScene();
-
-	system("cls");
+	PrologueScene();
+RESTART:
+	
 	User user;
-	//user = StartScene(); system("cls");
+	user = StartScene(); system("cls");
 	if (user.point == -1) return 0;
-	//MonTalkScene(); system("cls");
+	MonTalkScene();
 
 	user = ShowdownScene(); system("cls");
+goto RESTART;
 
     return 0;
 }

@@ -2,6 +2,8 @@
 
 int PrologueScene(void)
 {
+	// 배경음악 출력
+	PlaySound(TEXT("./_sound/prologue.wav"), NULL,SND_FILENAME | SND_ASYNC | SND_LOOP);
 	// 스토리 그림 출력
 	FILE *fp;
 	char buf[200] = { 0, };
@@ -26,5 +28,7 @@ int PrologueScene(void)
 	TextColor();
 	wait = _getch();
 	wait = _getch();
+	system("cls");
+	PlaySound(NULL, NULL, 0);
 	return 0;
 }

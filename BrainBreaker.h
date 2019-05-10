@@ -7,6 +7,8 @@
 #include <Windows.h>
 #include <time.h>
 #include <conio.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 
 #define TRUE 1
 #define FALSE 0

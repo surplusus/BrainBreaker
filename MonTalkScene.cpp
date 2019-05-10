@@ -2,6 +2,8 @@
 
 int MonTalkScene(void)
 {
+	PlaySound(TEXT("./_sound/noise.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+
 	// 몬스터 그림 출력
 	FILE *fp;
 	char buf[200] = { 0, };
@@ -29,5 +31,7 @@ int MonTalkScene(void)
 	TextColor();
 	wait = _getch();
 	wait = _getch();
+	PlaySound(NULL, NULL, 0);
+	system("cls");
 	return 0;
 }
